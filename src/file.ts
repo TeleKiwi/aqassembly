@@ -17,9 +17,8 @@ export function runFile(file: string[]) {
     })
 }
 
-export async function loadFile() {
-    const args = process.argv.slice(2)
-    let path = args[0] ?? ""
+export async function loadFile(filePath: string) {
+    let path = filePath ?? ""
     let file
 
     try {
