@@ -5,7 +5,6 @@ export class Process {
     private memory: Uint8Array;
     private registers: Uint8Array;
     private branchFlags: BranchFlags[];
-    private currentOpcode: Opcode;
     private lineNumber: number;
     private labelMap: Label[];
     halt: boolean;
@@ -15,7 +14,6 @@ export class Process {
         this.registers = new Uint8Array(13);
         this.branchFlags = [];
         this.labelMap = [];
-        this.currentOpcode = OpcodeENUM.NOP;
         this.lineNumber = 0;
         this.halt = false;
     }
@@ -59,6 +57,10 @@ export class Process {
 
     getLineNumber() {
         return this.lineNumber;
+    }
+
+    incrementLineNumber() {
+        this.lineNumber++;
     }
 
 

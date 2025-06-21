@@ -12,9 +12,9 @@ export function runFile(file: string[]) {
     }
 
     const process: Process = new Process()
-    instructions.forEach(instruction => {
-        runInstruction(instruction, process)
-    })
+    while (!process.halt) {
+        runInstruction(instructions[process.getLineNumber()], process)
+    }
 }
 
 export async function loadFile(filePath: string) {

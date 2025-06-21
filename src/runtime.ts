@@ -61,6 +61,8 @@ export class Implementation {
             val2 = process.readRegister(OperandHelper.getData(instruction, 1))
         }
 
+        process.clearBranchFlags()
+
         if (val1 === val2) {
             process.setBranchFlag("EQ")
         } else {
@@ -79,7 +81,8 @@ export class Implementation {
     static B(instruction: Instruction, process: Process) {
         if (((!instruction.branchFlag === undefined) && process.flagIsSet(instruction.branchFlag))) {
             let lineNumber = OperandHelper.getData(instruction, 0)
-            process.jump(lineNumber)
+            // Jump one instruction behind so the jumped-to instruction gets executed
+            process.jump(lineNumber - 1)
         }
     }
 
@@ -243,4 +246,5 @@ export function runInstruction(instruction: Instruction, process: Process) {
                 console.error("Not an instruction or label definition.")
             }
     }
+    process.incrementLineNumber()
 }
