@@ -61,7 +61,6 @@ export class Implementation {
         } else {
             val2 = process.readRegister(OperandHelper.getData(instruction, 1))
         }
-
         process.clearBranchFlags()
 
         if (val1 === val2) {

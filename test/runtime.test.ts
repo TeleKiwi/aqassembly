@@ -205,3 +205,92 @@ test('SUB reg + imm', () => {
 
     
 })
+
+test('CMP eq', () => {
+    process.reset() 
+
+    const num1 = Random.nextInclusive(1, 10)
+    process.writeRegister(0, num1)
+    process.writeRegister(1, num1)
+    let instruction: Instruction = newBlankInstruction()
+    instruction.operands = [
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "1",
+            type: OperandTypeENUM.REGISTER
+        }
+    ]
+    Runtime.Implementation.CMP(instruction, process)
+
+    expect(process.flagIsSet("EQ")).toBe(true)
+
+})
+
+test('CMP ne', () => {
+    process.reset() 
+
+    const num1 = Random.nextInclusive(1, 10)
+    process.writeRegister(0, num1)
+    process.writeRegister(1, num1 + 1)
+    let instruction: Instruction = newBlankInstruction()
+    instruction.operands = [
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "1",
+            type: OperandTypeENUM.REGISTER
+        }
+    ]
+    Runtime.Implementation.CMP(instruction, process)
+    expect(process.flagIsSet("NE")).toBe(true)
+
+})
+
+test('CMP gt', () => {
+    process.reset() 
+
+    const num1 = Random.nextInclusive(1, 10)
+    process.writeRegister(0, num1)
+    process.writeRegister(1, num1 - 1)
+    let instruction: Instruction = newBlankInstruction()
+    instruction.operands = [
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "1",
+            type: OperandTypeENUM.REGISTER
+        }
+    ]
+    Runtime.Implementation.CMP(instruction, process)
+    expect(process.flagIsSet("GT")).toBe(true)
+
+})
+
+test('CMP lt', () => {
+    process.reset() 
+
+    const num1 = Random.nextInclusive(1, 10)
+    process.writeRegister(0, num1)
+    process.writeRegister(1, num1 + 1)
+    let instruction: Instruction = newBlankInstruction()
+    instruction.operands = [
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "1",
+            type: OperandTypeENUM.REGISTER
+        }
+    ]
+    Runtime.Implementation.CMP(instruction, process)
+    expect(process.flagIsSet("NE")).toBe(true)
+
+})
