@@ -19,11 +19,12 @@ export class Implementation {
         let dest = OperandHelper.getData(instruction, 0)
         let src
         if (OperandHelper.getType(instruction, 1) === OperandTypeENUM.IMMEDIATE) {
-            src = OperandHelper.getData(instruction, 1)
+            src = OperandHelper.getData(instruction, 1)     
         } else {
-            src = process.readRegister(OperandHelper.getData(instruction, 0))
+            src = process.readRegister(OperandHelper.getData(instruction, 1))
         }
         process.writeRegister(dest, src)
+        
     }
 
     static ADD(instruction: Instruction, process: Process) {

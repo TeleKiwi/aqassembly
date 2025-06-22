@@ -1,5 +1,4 @@
 import type { BranchFlags, Opcode, Label } from "./types";
-import { OpcodeENUM } from "./types";
 
 export class Process {
     private memory: Uint8Array;
@@ -10,6 +9,16 @@ export class Process {
     halt: boolean;
 
     constructor() {
+        this.memory = new Uint8Array(255);
+        this.registers = new Uint8Array(13);
+        this.branchFlags = [];
+        this.labelMap = [];
+        this.lineNumber = 0;
+        this.halt = false;
+    }
+
+    // for use in testing
+    reset() {
         this.memory = new Uint8Array(255);
         this.registers = new Uint8Array(13);
         this.branchFlags = [];
