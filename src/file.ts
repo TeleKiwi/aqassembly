@@ -14,6 +14,7 @@ export function runFile(file: string[]) {
     const process: Process = new Process()
     while (!process.halt) {
         runInstruction(instructions[process.getLineNumber()], process)
+        process.incrementLineNumber()
     }
 }
 
