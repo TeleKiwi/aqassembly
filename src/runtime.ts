@@ -190,61 +190,43 @@ export class Implementation {
     }
 }
 
+const instructionMap: { 
+    [key: string]: (instruction: Instruction, process: Process) => void 
+} = {
+    "LDR": Implementation.LDR,
+    "STR": Implementation.STR,
+    "MOV": Implementation.MOV,
+    "ADD": Implementation.ADD,
+    "SUB": Implementation.SUB,
+    "CMP": Implementation.CMP,
+    "B": Implementation.B,
+    "AND": Implementation.AND,
+    "ORR": Implementation.ORR,
+    "XOR": Implementation.XOR,
+    "MVN": Implementation.MVN,
+    "LSL": Implementation.LSL,
+    "LSR": Implementation.LSR,
+    "OUT": Implementation.OUT,
+    // "HALT" handled separately below
+    // "NOP" handled separately below
+};
+
 export function runInstruction(instruction: Instruction, process: Process) {
-    switch (instruction.opcode) {
-        case "LDR":
-            Implementation.LDR(instruction, process)
-            break;
-        case "STR":
-            Implementation.STR(instruction, process)
-            break;
-        case "MOV":
-            Implementation.LDR(instruction, process)
-            break;
-        case "ADD":
-            Implementation.ADD(instruction, process)
-            break;
-        case "SUB":
-            Implementation.SUB(instruction, process)
-            break;
-        case "CMP":
-            Implementation.CMP(instruction, process)
-            break;
-        case "B":
-            Implementation.B(instruction, process)
-            break;
-        case "AND":
-            Implementation.ADD(instruction, process)
-            break;
-        case "ORR":
-            Implementation.ORR(instruction, process)
-            break;
-        case "XOR":
-            Implementation.XOR(instruction, process)
-            break;
-        case "MVN":
-            Implementation.MVN(instruction, process)
-            break;
-        case "LSL":
-            Implementation.LSL(instruction, process)
-            break;
-        case "LSR":
-            Implementation.LSR(instruction, process)
-            break;
-        case "HALT":
-            Implementation.HALT(process)
-            break;
-        case "OUT":
-            Implementation.OUT(instruction, process)
-            break;
-        case "NOP":
-            break;
-        default:
+    if (instruction.opcode === "HALT") {
+        Implementation.HALT(process);
+    } else if (instruction.opcode === "NOP") {
+        // Do nothing
+    } else {
+        const fn = instructionMap[instruction.opcode];
+        if (fn) {
+            fn(instruction, process);
+        } else {
             try {
-                Implementation.LABEL(instruction, process)
+                Implementation.LABEL(instruction, process);
             } catch (err) {
-                console.error("Not an instruction or label definition.")
+                console.error("Not an instruction or label definition.");
             }
+        }
     }
-    process.incrementLineNumber()
+    process.incrementLineNumber();
 }
