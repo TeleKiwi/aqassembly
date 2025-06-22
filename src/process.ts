@@ -7,7 +7,7 @@
  * handling labels, and controlling program flow.
  */
 
-import type { BranchFlags, Opcode, Label } from "./types";
+import type { BranchFlags, Label } from "./types";
 
 export class Process {
     private memory: Uint8Array;         // Simulated memory space
