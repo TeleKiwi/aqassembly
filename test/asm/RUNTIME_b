@@ -1,4 +1,0 @@
-MOV R0, #1
-B label
-label:
-MOV R0, #2

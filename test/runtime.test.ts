@@ -273,12 +273,13 @@ test('CMP gt', () => {
 
 })
 
-test('B', () => {
+test('CMP lt', () => {
     process.reset() 
 
-    
+    const num1 = Random.nextInclusive(1, 10)
+    process.writeRegister(0, num1)
+    process.writeRegister(1, num1 + 1)
     let instruction: Instruction = newBlankInstruction()
-    instruction.branchFlag = "UN"
     instruction.operands = [
         {
             data: "0",
@@ -289,5 +290,7 @@ test('B', () => {
             type: OperandTypeENUM.REGISTER
         }
     ]
+    Runtime.Implementation.CMP(instruction, process)
+    expect(process.flagIsSet("NE")).toBe(true)
 
 })

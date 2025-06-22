@@ -80,6 +80,9 @@ export class Implementation {
 
     static B(instruction: Instruction, process: Process) {
         if (((!instruction.branchFlag === undefined) && process.flagIsSet(instruction.branchFlag))) {
+            let lineNumber = OperandHelper.getData(instruction, 0)
+            // Jump one instruction behind so the jumped-to instruction gets executed
+            process.jump(lineNumber - 1)
         }
     }
 
