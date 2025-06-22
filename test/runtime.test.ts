@@ -4,7 +4,7 @@ import * as Runtime from "../src/runtime"
 import type { Instruction } from "../src/types"
 import { newBlankInstruction, OperandTypeENUM } from "../src/types"
 import { Random } from "../src/lib/rand"
-import { moveEmitHelpers } from "typescript"
+import { mod } from "../src/lib/mod"
 
 const process = new Process()
 
@@ -88,62 +88,120 @@ test('MOV reg -> reg', () => {
 })
 
 
-// test('ADD reg + reg', () => {
-//     process.reset() 
+test('ADD reg + reg', () => {
+    process.reset() 
 
-//     const num1 = Random.nextInclusive(1, 10)
-//     const num2 = Random.nextInclusive(1, 10) // register
-//     process.writeRegister(0, num1)
-//     process.writeRegister(1, num2)
+    const num1 = Random.nextInclusive(1, 10)
+    const num2 = Random.nextInclusive(1, 10) // register
+    process.writeRegister(0, num1)
+    process.writeRegister(1, num2)
 
 
-//     // register, register
-//     let instruction: Instruction = newBlankInstruction()
-//     instruction.operands = [
-//         {
-//             data: "0",
-//             type: OperandTypeENUM.REGISTER
-//         },
-//         {
-//             data: "0",
-//             type: OperandTypeENUM.REGISTER
-//         },
-//         {
-//             data: "1",
-//             type: OperandTypeENUM.REGISTER
-//         }
-//     ]
-//     Runtime.Implementation.ADD(instruction, process)
-//     let res = process.readRegister(0)
-//     expect(res).toBe(num1 + num2)
-// })
+    // register, register
+    let instruction: Instruction = newBlankInstruction()
+    instruction.operands = [
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "1",
+            type: OperandTypeENUM.REGISTER
+        }
+    ]
+    Runtime.Implementation.ADD(instruction, process)
+    let res = process.readRegister(0)
+    expect(res).toBe(num1 + num2)
+})
 
-// test('ADD reg + mem', () => {
-//     process.reset() 
+test('ADD reg + imm', () => {
+    process.reset() 
 
-//     const num1 = Random.nextInclusive(1, 10)
-//     const num2 = Random.nextInclusive(1, 10) 
-//     process.writeRegister(0, num1)
-//     process.writeMemory(0, num2)
+    const num1 = Random.nextInclusive(1, 10)
+    const num2 = Random.nextInclusive(1, 10) 
+    process.writeRegister(0, num1)
     
-//     let instruction: Instruction = newBlankInstruction()
-//     instruction.operands = [
-//         {
-//             data: "0",
-//             type: OperandTypeENUM.REGISTER
-//         },
-//         {
-//             data: "0",
-//             type: OperandTypeENUM.REGISTER
-//         },
-//         {
-//             data: "0",
-//             type: OperandTypeENUM.MEMORYADDR
-//         }
-//     ]
-//     Runtime.Implementation.ADD(instruction, process)
-//     let res = process.readRegister(0)
-//     expect(res).toBe(num1 + num2)
+    let instruction: Instruction = newBlankInstruction()
+    instruction.operands = [
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: num2.toString(),
+            type: OperandTypeENUM.IMMEDIATE
+        }
+    ]
+    Runtime.Implementation.ADD(instruction, process)
+    let res = process.readRegister(0)
+    expect(res).toBe(num1 + num2)
 
     
-// })
+})
+
+test('SUB reg + reg', () => {
+    process.reset() 
+
+    const num1 = Random.nextInclusive(1, 10)
+    const num2 = Random.nextInclusive(1, 10) // register
+    process.writeRegister(0, num1)
+    process.writeRegister(1, num2)
+
+
+    // register, register
+    let instruction: Instruction = newBlankInstruction()
+    instruction.operands = [
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "1",
+            type: OperandTypeENUM.REGISTER
+        }
+    ]
+    Runtime.Implementation.SUB(instruction, process)
+    let res = process.readRegister(0)
+    expect(res).toBe(mod(num1 - num2, 256))
+})
+
+test('SUB reg + imm', () => {
+    process.reset() 
+
+    const num1 = Random.nextInclusive(1, 10)
+    const num2 = Random.nextInclusive(1, 10) 
+    process.writeRegister(0, num1)
+    
+    let instruction: Instruction = newBlankInstruction()
+    instruction.operands = [
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: "0",
+            type: OperandTypeENUM.REGISTER
+        },
+        {
+            data: num2.toString(),
+            type: OperandTypeENUM.IMMEDIATE
+        }
+    ]
+    Runtime.Implementation.SUB(instruction, process)
+    let res = process.readRegister(0)
+    expect(res).toBe(mod(num1 - num2, 256))
+
+    
+})
