@@ -101,6 +101,16 @@ export class Process {
     jump(newLine: number) {
         this.lineNumber = newLine;
     }
+    /**
+     * Finds the line number associated with a label.
+     * @param labelName Name of the label to find.
+     * @returns Line number if found, null otherwise.
+     */
+
+    findLabel(labelName: string): number | null {
+        const label = this.labelMap.find(label => label.name === labelName);
+        return label ? label.lineNumber : null;
+    }
 
     /**
      * Gets the current line number.
