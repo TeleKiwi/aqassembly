@@ -47,11 +47,12 @@ export class Implementation {
         let dest = OperandHelper.getData(instruction, 0)
         let src
         if (OperandHelper.getType(instruction, 1) === OperandTypeENUM.IMMEDIATE) {
-            src = OperandHelper.getData(instruction, 1)
+            src = OperandHelper.getData(instruction, 1)     
         } else {
-            src = process.readRegister(OperandHelper.getData(instruction, 0))
+            src = process.readRegister(OperandHelper.getData(instruction, 1))
         }
         process.writeRegister(dest, src)
+        
     }
 
     /**
@@ -97,7 +98,6 @@ export class Implementation {
         } else {
             val2 = process.readRegister(OperandHelper.getData(instruction, 1))
         }
-
         process.clearBranchFlags()
 
         if (val1 === val2) {
@@ -118,9 +118,14 @@ export class Implementation {
      */
     static B(instruction: Instruction, process: Process) {
         if (((!instruction.branchFlag === undefined) && process.flagIsSet(instruction.branchFlag))) {
-            let lineNumber = OperandHelper.getData(instruction, 0)
-            // Jump one instruction behind so the jumped-to instruction gets executed
-            process.jump(lineNumber - 1)
+            let label = instruction.operands![0].data
+            let lineNumber = process.findLabel(label)
+            if (lineNumber !== null) {
+                process.jump(lineNumber)
+            } else {
+                console.error(`Label ${label} not found.`)
+                process.halt = true
+            }
         }
     }
 
@@ -238,20 +243,20 @@ export class Implementation {
     }
 
     /**
-     * Output: Prints the value of a register, memory address, or immediate to the console.
+     * Output: Returns the value of a register, memory address, or immediate.
      */
     static OUT(instruction: Instruction, process: Process) {
         let src
         let type = OperandHelper.getType(instruction, 0)
         if (type === OperandTypeENUM.REGISTER) {
             src = process.readRegister(OperandHelper.getData(instruction, 0))
-        } else if (type = OperandTypeENUM.MEMORYADDR) {
+        } else if (type === OperandTypeENUM.MEMORYADDR) {
             src = process.readMemory(OperandHelper.getData(instruction, 0))
         }
         else {
-            src = OperandHelper.getData(instruction, 2)
+            src = OperandHelper.getData(instruction, 0)
         }
-        console.log(src)
+        return src
     }
 }
 
@@ -298,7 +303,13 @@ export function runInstruction(instruction: Instruction, process: Process) {
     } else {
         const fn = instructionMap[instruction.opcode];
         if (fn) {
-            fn(instruction, process);
+            if(fn === Implementation.OUT) {
+                let out = fn(instruction, process);
+                console.log(out)
+            } else {
+                fn(instruction, process);
+            }
+            
         } else {
             try {
                 Implementation.LABEL(instruction, process);

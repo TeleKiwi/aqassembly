@@ -7,7 +7,7 @@
  * handling labels, and controlling program flow.
  */
 
-import type { BranchFlags, Opcode, Label } from "./types";
+import type { BranchFlags, Label } from "./types";
 
 export class Process {
     private memory: Uint8Array;         // Simulated memory space
@@ -18,6 +18,23 @@ export class Process {
     halt: boolean;                      // Halt flag for program termination
 
     constructor() {
+        this.memory = new Uint8Array(255);      // 255 bytes of memory
+        this.registers = new Uint8Array(13);    // 13 general-purpose registers
+        this.branchFlags = [];
+        this.labelMap = [];
+        this.lineNumber = 0;
+        this.halt = false;
+    }
+
+    /**
+     * Resets the process state to its initial values.
+     * 
+     * This method is primarily used for testing. It reinitializes the registers and memory,
+     * clears all branch flags and labels, resets the line number to zero, and clears the halt flag.
+     */
+    reset() {
+        this.memory = new Uint8Array(255);
+        this.registers = new Uint8Array(13);
         this.memory = new Uint8Array(255);      // 255 bytes of memory
         this.registers = new Uint8Array(13);    // 13 general-purpose registers
         this.branchFlags = [];
@@ -100,6 +117,16 @@ export class Process {
      */
     jump(newLine: number) {
         this.lineNumber = newLine;
+    }
+    /**
+     * Finds the line number associated with a label.
+     * @param labelName Name of the label to find.
+     * @returns Line number if found, null otherwise.
+     */
+
+    findLabel(labelName: string): number | null {
+        const label = this.labelMap.find(label => label.name === labelName);
+        return label ? label.lineNumber : null;
     }
 
     /**
