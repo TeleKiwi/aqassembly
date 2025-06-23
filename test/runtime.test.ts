@@ -5,6 +5,8 @@ import type { Instruction } from "../src/types"
 import { newBlankInstruction, OperandTypeENUM } from "../src/types"
 import { Random } from "../src/lib/rand"
 import { mod } from "../src/lib/mod"
+import { loadFile, runFile } from "../src/file"
+import { parse } from "../src/parser"
 
 const process = new Process()
 
@@ -293,4 +295,99 @@ test('CMP lt', () => {
     Runtime.Implementation.CMP(instruction, process)
     expect(process.flagIsSet("NE")).toBe(true)
 
+})
+
+test('B unconditional', async () => {
+    const file = await loadFile("test/asm/PROCESS_b.asm")
+    
+
+    const instructions: Instruction[] = []
+        let line = ""
+        for (let i = 0; i <= file.length - 1; i++) {
+            line = file[i]
+            instructions.push(parse(line))
+        }
+    
+        const process: Process = new Process()
+        while (!process.halt) {
+            Runtime.runInstruction(instructions[process.getLineNumber()], process)
+        }
+
+    expect(process.getLineNumber()).toBe(4)
+})
+
+test('B gt', async () => {
+    const file = await loadFile("test/asm/PROCESS_bgt.asm")
+
+
+    const instructions: Instruction[] = []
+    let line = ""
+    for (let i = 0; i <= file.length - 1; i++) {
+        line = file[i]
+        instructions.push(parse(line))
+    }
+
+    const process: Process = new Process()
+    while (!process.halt) {
+        Runtime.runInstruction(instructions[process.getLineNumber()], process)
+    }
+
+    expect(process.getLineNumber()).toBe(7)
+})
+
+test('B ne', async () => {
+    const file = await loadFile("test/asm/PROCESS_bne.asm")
+
+
+    const instructions: Instruction[] = []
+    let line = ""
+    for (let i = 0; i <= file.length - 1; i++) {
+        line = file[i]
+        instructions.push(parse(line))
+    }
+
+    const process: Process = new Process()
+    while (!process.halt) {
+        Runtime.runInstruction(instructions[process.getLineNumber()], process)
+    }
+
+    expect(process.getLineNumber()).toBe(7)
+})
+
+test('B lt', async () => {
+    const file = await loadFile("test/asm/PROCESS_blt.asm")
+
+
+    const instructions: Instruction[] = []
+    let line = ""
+    for (let i = 0; i <= file.length - 1; i++) {
+        line = file[i]
+        instructions.push(parse(line))
+    }
+
+    const process: Process = new Process()
+    while (!process.halt) {
+        Runtime.runInstruction(instructions[process.getLineNumber()], process)
+    }
+
+    expect(process.getLineNumber()).toBe(7)
+})
+
+test('B eq', async () => {
+    const file = await loadFile("test/asm/PROCESS_beq.asm")
+
+
+    const instructions: Instruction[] = []
+    let line = ""
+    for (let i = 0; i <= file.length - 1; i++) {
+        line = file[i]
+        instructions.push(parse(line))
+    }
+
+    const process: Process = new Process()
+    while (!process.halt) {
+        Runtime.runInstruction(instructions[process.getLineNumber()], process)
+    }
+
+    expect(process.getLineNumber()).toBe(7)
 })
