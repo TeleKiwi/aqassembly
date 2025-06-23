@@ -243,20 +243,20 @@ export class Implementation {
     }
 
     /**
-     * Output: Prints the value of a register, memory address, or immediate to the console.
+     * Output: Returns the value of a register, memory address, or immediate.
      */
     static OUT(instruction: Instruction, process: Process) {
         let src
         let type = OperandHelper.getType(instruction, 0)
         if (type === OperandTypeENUM.REGISTER) {
             src = process.readRegister(OperandHelper.getData(instruction, 0))
-        } else if (type = OperandTypeENUM.MEMORYADDR) {
+        } else if (type === OperandTypeENUM.MEMORYADDR) {
             src = process.readMemory(OperandHelper.getData(instruction, 0))
         }
         else {
-            src = OperandHelper.getData(instruction, 2)
+            src = OperandHelper.getData(instruction, 0)
         }
-        console.log(src)
+        return src
     }
 }
 
@@ -303,7 +303,13 @@ export function runInstruction(instruction: Instruction, process: Process) {
     } else {
         const fn = instructionMap[instruction.opcode];
         if (fn) {
-            fn(instruction, process);
+            if(fn === Implementation.OUT) {
+                let out = fn(instruction, process);
+                console.log(out)
+            } else {
+                fn(instruction, process);
+            }
+            
         } else {
             try {
                 Implementation.LABEL(instruction, process);
