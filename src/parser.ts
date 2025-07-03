@@ -16,27 +16,31 @@ import { OperandTypeENUM, OpcodeENUM, newBlankInstruction } from "./types"
  * @returns Array of opcode and operand strings.
  */
 function checkAndRemoveCommas(line: string): string[] {
+    // If the line is a single word (likely just an opcode), return as array
     if (line.split(" ").length === 1) return [line]
-    let lineSplit = line.split(" ").slice(1)
-    if (lineSplit.length === 0) {
+
+    // Split the line into opcode and operand parts
+    const operandParts = line.split(" ").slice(1)
+    if (operandParts.length === 0) {
         return [line]
-    }
-    else if (lineSplit.length === 1) {
+    } else if (operandParts.length === 1) {
         return line.split(" ")
     }
-    let word = ""
-    for (let i = 0; i <= lineSplit.length - 2; i++) {
-        word = lineSplit[i]
-        if (word[word.length - 1] === ",") {
-            word = `${word.split(",")[0]}`
-            lineSplit[i] = word
+
+    // Check for commas between operands
+    for (let i = 0; i <= operandParts.length - 2; i++) {
+        let operand = operandParts[i]
+        if (operand[operand.length - 1] === ",") {
+            operandParts[i] = operand.slice(0, -1)
         } else {
             console.error(`Comma missing; ${line}`)
             process.exit(1)
         }
     }
-    lineSplit.unshift(`${line.split(" ")[0]}`)
-    return lineSplit
+
+    // Prepend the opcode to the operands array
+    operandParts.unshift(line.split(" ")[0])
+    return operandParts
 }
 
 /**
